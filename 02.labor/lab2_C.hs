@@ -1,4 +1,4 @@
-import System.Win32 (xBUTTON1)
+import System.Win32 (xBUTTON1, dACL_SECURITY_INFORMATION)
 -- # 2. labor
 
 -- I. Könyvtárfüggvények használata nélkül, definiáljuk azt a függvényt, amely meghatározza:
@@ -13,14 +13,14 @@ szjSzorzat2 x
     | otherwise = mod x 10 * szjSzorzat2 (div x 10)
 
 -- - egy szám számjegyeinek összegét (2 módszerrel),
-szjOszzeg x
-    | x < 0 = szjOszzeg (abs x)
+szjOsszeg x
+    | x < 0 = szjOsszeg (abs x)
     | div x 10 == 0 = x
-    | otherwise = mod x 10 + szjOszzeg (div x 10)
+    | otherwise = mod x 10 + szjOsszeg (div x 10)
 
 -- - egy szám számjegyeinek számát (2 módszerrel),
 szjSzama x
-    | x < 0 = szjOszzeg (abs x)
+    | x < 0 = szjSzama (abs x)
     | div x 10 == 0 = 1
     | otherwise = 1 + szjSzama(div x 10)
 
@@ -73,8 +73,28 @@ legnagyobbSzj x = max1 x 0
 --   fugv 1023 2 1 -> 10
 --   fugv 345281 16 4 -> 2
 --   ```
+
+bSzamrDSzj n b d
+    | n < 0 = bSzamrDSzj (abs n) b d 
+    | n < b = if n == d then 1 else 0
+    | otherwise =
+        if mod n b == d
+            then 1 + bSzamrDSzj (div n b) b d
+            else bSzamrDSzj (div n b) b d
+
+
+
+
 -- - az 1000-ik Fibonacci számot.
 
+fiboN n = fibo 0 1 0 n
+
+fiboN2 n = fiboSg 0 1 0 n
+    where
+        fiboSg _ _ res 0 =res
+        fiboSg a b res n = fiboSg b res (res+b) (n-1)
+
+fiboSzamok n = map (fiboN n [0 .. n])
 -- II. Alkalmazzuk a map függvényt a I.-nél megírt függvényekre.
 
 -- **Megoldott feladatok:**
